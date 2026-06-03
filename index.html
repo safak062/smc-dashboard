@@ -1128,7 +1128,7 @@ Dan volledige analyse (max 300 woorden) NEDERLANDS:
 BELANGRIJK: Baseer alle prijsniveaus op de live data hierboven. Als RSI >70 = bearish signaal geven. Als RSI <30 = bullish signaal. Wees CONSISTENT met de data.`;
 
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch('https://api./api/analyse/v1/messages',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:aiPrompt}]})
     });
@@ -1297,7 +1297,7 @@ async function runNewsAnalysis(){
   document.getElementById('aiNewsPanelBody').innerHTML='<div class="ai-spin"><div class="spinner" style="border-top-color:#00d37f"></div><span>AI analyseert...</span></div>';
   const now=getCEST();const top=NEWS_EVENTS.filter(e=>e.impact==='HIGH').slice(0,8).map(e=>`${e.time} CEST | ${FLAGS[e.currency]||''} ${e.currency} | ${e.event}`).join('\n');
   const prompt=`Expert SMC trader België. Impact op: XAU/USD, XAG/USD, EUR/USD, USOIL, DJ30, NAS100, SP500, BTC/USD.\nTijd: ${pad(now.getHours())}:${pad(now.getMinutes())} CEST.\nEvents:\n${top}\nMax 250 woorden NEDERLANDS: 1)gevaarlijkste events 2)per paar 3)meest gevoelig 4)welke stil zetten`;
-  try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});const d=await r.json();document.getElementById('aiNewsPanelBody').innerHTML='<div class="ai-body">'+d.content.map(c=>c.text||'').join('').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')+'</div>';}catch(e){document.getElementById('aiNewsPanelBody').innerHTML='<p style="color:#ff4757;">Fout.</p>';}
+  try{const r=await fetch('https://api./api/analyse/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});const d=await r.json();document.getElementById('aiNewsPanelBody').innerHTML='<div class="ai-body">'+d.content.map(c=>c.text||'').join('').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')+'</div>';}catch(e){document.getElementById('aiNewsPanelBody').innerHTML='<p style="color:#ff4757;">Fout.</p>';}
   btn.disabled=false;btn.innerHTML='⚡ AI Nieuws';
 }
 
