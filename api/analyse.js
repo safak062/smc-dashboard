@@ -3,11 +3,13 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
+  
   const body = await new Promise((resolve) => {
     let data = '';
     req.on('data', chunk => data += chunk);
     req.on('end', () => resolve(JSON.parse(data)));
   });
+
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -21,6 +23,7 @@ export default async function handler(req, res) {
       messages: [{ role: 'user', content: body.prompt }]
     })
   });
+
   const data = await response.json();
   res.status(200).json(data);
 }
